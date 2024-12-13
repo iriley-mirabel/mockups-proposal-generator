@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat and Proposal Layout</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Left section (2/3) -->
+        <div class="proposal-section">
+            <!-- Blank initial state -->
+            <div id="blankView" class="view-content">
+                <!-- Can be empty or add a subtle message -->
+            </div>
+
+            <!-- Proposal View (hidden initially) -->
+            <div id="proposalView" class="view-content hidden">
+                <div class="proposal-content">
+                    <!-- Header with logo and title -->
+                    <div class="proposal-header">
+                        <div class="logo-section">
+                            <img src="logo32.png" alt="Mirabel Technologies" class="company-logo">
+                            <div class="company-address">
+                                1401 E Broward Blvd, Suite #206<br>
+                                Fort Lauderdale, Florida 33301<br>
+                                (954) 462-4579 ph<br>
+                                (206) 237-2185 fax
+                            </div>
+                        </div>
+                        <h1 class="proposal-title">PROPOSAL</h1>
+                    </div>
+
+                    <!-- Proposal Details Grid -->
+                    <div class="proposal-details">
+                        <div class="detail-row">
+                            <div class="detail-label">Proposal For</div>
+                            <div class="detail-value">Tanja Lemmon<br>Ink Deport<br>7269 S. Pearl Street<br>Denver, CO 80210</div>
+                            <div class="detail-label">Proposal Date</div>
+                            <div class="detail-value">12/11/2024</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Proposal Number</div>
+                            <div class="detail-value">10166</div>
+                            <div class="detail-label">Sales Rep</div>
+                            <div class="detail-value">Jakob Fenger</div>
+                        </div>
+                    </div>
+
+                    <!-- Proposal Table -->
+                    <table class="proposal-table">
+                        <thead>
+                            <tr>
+                                <th>Pub.</th>
+                                <th>Issue</th>
+                                <th>Year</th>
+                                <th>Ad Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Add more rows as needed -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Products View (hidden initially) -->
+            <div id="productsView" class="view-content hidden">
+                <h2>Sample Products</h2>
+                <div class="products-grid">
+                    <div class="product-card">
+                        <h3>Westchester Magazine</h3>
+                        <p>Everything you need to know about Westchester.</p>
+                        <button class="select-btn" onclick="selectProduct('Westchester Magazine')">Select</button>
+                    </div>
+                    <div class="product-card">
+                        <h3>Dining in Gold Coast Newsletter</h3>
+                        <p>Weekly newsletter for the Gold Coast area</p>
+                        <button class="select-btn" onclick="selectProduct('Dining in Gold Coast Newsletter')">Select</button>
+                    </div>
+                    <div class="product-card">
+                        <h3>The New York Times</h3>
+                        <p>World class newspaper with a wide range of content</p>
+                        <button class="select-btn" onclick="selectProduct('The New York Times')">Select</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right section (1/3) - Chat Window -->
+        <div class="chat-section">
+            <div class="chat-window">
+                <div class="chat-header">
+                    <h3>Chat</h3>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Messages will appear here -->
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="messageInput" placeholder="Type your message..." onkeyup="handleEnterKey(event)">
+                    <button onclick="addMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addMessage() {
+            const input = document.getElementById('messageInput');
+            const messagesDiv = document.getElementById('chatMessages');
+            
+            if (input.value.trim() !== '') {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                messageDiv.textContent = input.value;
+                messagesDiv.appendChild(messageDiv);
+                
+                const message = input.value.toLowerCase();
+                
+                // Check for proposal keywords
+                const proposalKeywords = ['sale', 'proposal', 'order', 'renew'];
+                if (proposalKeywords.some(keyword => message.includes(keyword))) {
+                    toggleView('proposal');
+                }
+                
+                // Check for product keywords
+                const productKeywords = ['product', 'products', 'publication', 'publications'];
+                if (productKeywords.some(keyword => message.includes(keyword))) {
+                    toggleView('products');
+                }
+                
+                input.value = '';
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+        }
+
+        function handleEnterKey(event) {
+            if (event.key === 'Enter') {
+                addMessage();
+            }
+        }
+
+        function toggleView(viewName) {
+            const blankView = document.getElementById('blankView');
+            const proposalView = document.getElementById('proposalView');
+            const productsView = document.getElementById('productsView');
+            
+            // Hide all views first
+            [blankView, proposalView, productsView].forEach(view => view.classList.add('hidden'));
+            
+            // Show the requested view
+            if (viewName === 'proposal') {
+                proposalView.classList.remove('hidden');
+            } else if (viewName === 'products') {
+                productsView.classList.remove('hidden');
+            } else {
+                blankView.classList.remove('hidden');
+            }
+        }
+
+        function selectProduct(productName) {
+            // Get the proposal table body
+            const proposalTableBody = document.querySelector('.proposal-table tbody');
+            
+            // Create new table row
+            const newRow = document.createElement('tr');
+            
+            // Add cells with product information
+            newRow.innerHTML = `
+                <td>${productName}</td>
+                <td>Jan ${Math.floor(Math.random() * 28) + 1}</td>
+                <td>2025</td>
+                <td>1/4 Quarter Page</td>
+            `;
+            
+            // Add the new row to the table
+            proposalTableBody.appendChild(newRow);
+            
+            // Switch back to proposal view
+            toggleView('proposal');
+        }
+    </script>
+</body>
+</html> 
